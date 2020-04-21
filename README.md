@@ -2,8 +2,8 @@
 Introduction
 ---
 Proton is a tool for use with the Steam client which allows games which are
-exclusive to Windows to run on the Linux operating system. It uses Wine to
-facilitate this.
+exclusive to Windows to run on Linux and macOS operating systems. It uses Wine
+to facilitate this.
 
 Most users will prefer to use Proton provided by the Steam client itself.  The
 source code is provided to enable advanced users the ability to alter
@@ -36,6 +36,10 @@ Which you can clone to your system with this command:
 
         git clone --recurse-submodules https://github.com/ValveSoftware/Proton.git proton
         cd proton
+        #for linux:
+        git submodule update --init wine dxvk ffmpeg openal-soft openvr
+        #for macos:
+        git submodule update --init
 
 If you wish to change any subcomponent, now is the time to do so.
 For example, if you wish make changes to Wine, you would apply those
@@ -183,12 +187,24 @@ If you are building without the Steam runtime, then instead use:
 
         ../proton/configure.sh --no-steam-runtime
 
-**Tip**: If you are building without the Steam runtime, you should now run
-`make obj-wine64/Makefile obj-wine32/Makefile` and check the files
-`obj-wine64/config.log` and `obj-wine32/config.log` for missing packages.
-Search for `won't be supported`. A couple of missing packages are normal:
-`opencv`, `oss`. More than that may indicate a problem.  Please see your
-distro's documentation to acquire the considerable build dependencies for Wine.
+---
+Building for macOS
+---
+To build Proton for macOS, install the latest Xcode command line tools, as
+well as cmake (for openal-soft), a recent nasm (for libjpeg-turbo), libtool, and automake. You can
+use a packager like [Homebrew](https://brew.sh/) to find these packages.
+
+        brew install cmake nasm libtool automake
+
+Then run:
+
+        ./build_proton.sh
+
+TODO - Surely there are other dependencies we have not listed there.
+
+It is important to examine the output near the end of
+<tt>build/wine.win{64,32}/config.log</tt> to ensure that you have all of the
+relevant libraries required to build Wine properly.
 
 ---
 Build Proton
